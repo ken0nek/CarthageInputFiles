@@ -5,20 +5,29 @@ EXECUTABLE_NAME=carthage-input-files
 PROJECT_NAME=CarthageInputFiles
 XCODEFLAGS=-project $(PROJECT_NAME).xcodeproj
 
-CARTHAGEINPUTFILES_EXECUTABLE=./build/Release/$(PROJECT_NAME)
+CARTHAGEINPUTFILES_EXECUTABLE=./.build/release/$(PROJECT_NAME)
 
 SWIFT_COMMAND=/usr/bin/swift
 SWIFT_BUILD_COMMAND=$(SWIFT_COMMAND) build
 SWIFT_TEST_COMMAND=$(SWIFT_COMMAND) test
 
-build:
+debug:
 	$(SWIFT_BUILD_COMMAND)
+
+release:
+	$(SWIFT_BUILD_COMMAND) --configuration release
+
+update:
+	$(SWIFT_COMMAND) package update
+
+generate:
+	$(SWIFT_COMMAND) package generate-xcodeproj
 
 test:
 	$(SWIFT_TEST_COMMAND)
 
 install:
-	$(BUILD_TOOL) $(XCODEFLAGS)
+	$(SWIFT_BUILD_COMMAND) --configuration release
 	mkdir -p $(PREFIX)/bin
 	cp -f $(CARTHAGEINPUTFILES_EXECUTABLE) $(PREFIX)/bin/$(EXECUTABLE_NAME)
 
