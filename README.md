@@ -2,6 +2,8 @@
 
 This command lets you free from setting framework paths every time when using `Carthage`.
 
+You don't have to write manually `$(SRCROOT)/Carthage/Build/iOS/*.framework` any more :)
+
 ## Usage
 
 Add `Run Script` for `Carthage` in Xcode.
@@ -28,3 +30,12 @@ or
 `make install`
 
 `carthage-input-files` command will be moved to `/usr/local/bin` by default
+
+## Little tricks
+
+After executing `carthage-input-files` command, you will see huge diff in `project.pbxproj` because of format.
+This problem will be fixed by editing some settings.
+
+For example, click `+` and then click `-` :P
+
+![](./Resources/work-around.gif)
