@@ -4,6 +4,8 @@ This command lets you free from setting framework paths every time when using `C
 
 You don't have to write manually `$(SRCROOT)/Carthage/Build/iOS/*.framework` any more :)
 
+![](./Resources/usage.gif)
+
 ## Usage
 
 Add `Run Script` for `Carthage` in Xcode.
