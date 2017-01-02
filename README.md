@@ -41,3 +41,9 @@ This problem will be fixed by editing some settings.
 For example, click `+` and then click `-` :P
 
 ![](./Resources/work-around.gif)
+
+## Future features
+
+- [ ] Write only new frameworks
+- [ ] Specify target
+- [ ] Add Run Script for Carthage
