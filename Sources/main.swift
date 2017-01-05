@@ -142,6 +142,7 @@ command(
 
     var frameworksDiff = [String](diff)
 
+    // TODO: Error handling
     while true {
 
         print("\nThese frameworks will be newly added to input files for Carthage Run Scripts\n")
@@ -157,6 +158,8 @@ command(
 
         if yesno == "y" || yesno.isEmpty {
             break
+        } else if yesno == "n" {
+            return
         } else {
 
             let exclude = yesno.characters.split(separator: ",").flatMap { Int(String($0).trimmingCharacters(in: .whitespacesAndNewlines)) }
