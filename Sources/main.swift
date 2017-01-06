@@ -2,8 +2,6 @@ import Foundation
 import Commander
 import Rainbow
 
-// target:
-
 private let cartfile = "Cartfile"
 private let pbxproj  = "project.pbxproj"
 private let platforms = ["ios": "iOS",
@@ -77,29 +75,62 @@ command(
     guard let objects = dic["objects"] as? [String: Any] else { return }
     var objectsToWrite = objects
 
-    var found = false
-    var key = ""
-
-    var currentInputPaths: [String] = []
+    var targets: [(key: String, name: String, phaseKeys: [String])] = []
+    var carthageShellScripts: [(key: String, inputPaths: [String])] = []
 
     for (k, v) in objects {
         guard let dd = v as? [String: Any] else { continue }
 
         guard let isa = dd["isa"] as? String else { continue }
-        guard isa == "PBXShellScriptBuildPhase" else { continue }
 
-        guard let shellScript = dd["shellScript"] as? String else { continue }
-        guard shellScript.hasSuffix("copy-frameworks") else { continue }
-        guard let inputPaths = dd["inputPaths"] as? [String] else { continue }
+        switch isa {
+        case "PBXNativeTarget":
+            guard let targetName = dd["name"] as? String else { continue }
+            guard let buildPhases = dd["buildPhases"] as? [String] else { continue }
 
-        currentInputPaths = inputPaths
+            targets.append((k, targetName, buildPhases))
+        case "PBXShellScriptBuildPhase":
+            guard let shellScript = dd["shellScript"] as? String else { continue }
+            guard shellScript.hasSuffix("copy-frameworks") else { continue }
+            guard let inputPaths = dd["inputPaths"] as? [String] else { continue }
 
-        found = true
-        key = k
+            carthageShellScripts.append((k, inputPaths))
+        default:
+            continue
+        }
     }
 
-    if !found {
-        print("This project has no run scripts for Carthage".red)
+    var selectedIndex = -1
+    while true {
+        print("Which target do you want to process?".blue)
+        targets.map { $0.name }.enumerated().forEach {
+            print("\($0): \($1)")
+        }
+        guard let str = readLine(), let index = Int(str.trimmingCharacters(in: .whitespacesAndNewlines)) else { continue }
+
+        guard 0 <= index && index <= targets.count - 1 else {
+            print("Error: Please input valide number".red)
+            continue
+        }
+
+        selectedIndex = index
+        break
+    }
+
+    let selectedTarget = targets[selectedIndex]
+
+    var key = ""
+    var currentInputPaths: [String] = []
+    for script in carthageShellScripts {
+        if selectedTarget.phaseKeys.contains(script.key) {
+            key = script.key
+            currentInputPaths = script.inputPaths
+            break
+        }
+    }
+
+    guard !key.isEmpty else {
+        print("This target has no run scripts for Carthage".red)
         print("[Xcode] -> [Targets] -> [Build Phases]: [+ New Run Script Phase]")
         print("and add this command `/usr/local/bin/carthage copy-frameworks`")
         return
@@ -153,7 +184,7 @@ command(
         tmp.forEach { print($0.green) }
 
         print("\nis it OK? [[y]/n]")
-        print("Please type the number if there are any frameworks you would like to exclude. (Example: 1, 3)")
+        print("Please type the number if there are any frameworks you would like to exclude. (Example: 1, 3)".blue)
         guard let yesno = readLine() else { return }
 
         if yesno == "y" || yesno.isEmpty {
