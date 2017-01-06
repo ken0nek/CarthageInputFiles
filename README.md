@@ -46,5 +46,7 @@ For example, click `+` and then click `-` :P
 
 - [x] Write only new frameworks
 - [x] Select frameworks you want to exclude
-- [ ] Specify target
+- [x] Specify target
+- [ ] Fix format problem (openStep <-> xml)
 - [ ] Add Run Script for Carthage
+
