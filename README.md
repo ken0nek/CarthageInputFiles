@@ -44,6 +44,7 @@ For example, click `+` and then click `-` :P
 
 ## Future features
 
-- [ ] Write only new frameworks
+- [x] Write only new frameworks
+- [x] Select frameworks you want to exclude
 - [ ] Specify target
 - [ ] Add Run Script for Carthage

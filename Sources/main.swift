@@ -193,6 +193,7 @@ command(
     objectsToWrite[key] = target
     dicToWrite["objects"] = objectsToWrite
 
+    // .openStep: Property list format kCFPropertyListOpenStepFormat not supported for writing
     guard let dataToWrite = try? PropertyListSerialization.data(fromPropertyList: dicToWrite, format: .xml, options: .allZeros) else { return }
 
     do {
